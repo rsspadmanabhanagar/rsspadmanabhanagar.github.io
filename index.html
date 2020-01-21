@@ -1,0 +1,1316 @@
+<html>
+    <div style="text-align: center;">
+        <img src="OM.jpg" height="80" width="80">
+        <h2>Sri Gurupooja Utsava</h2>
+        <h4>Utsava vivara</h4>
+    </div>
+    <hr>
+    Bhaga : <input id="bhagaid" type="text">
+    <br>
+    Nagara :    <input id="nagaraid" type="text">
+    <br>
+    Vasati :    <input id="vasatiid" type="text">
+    <br>
+    Utsava Date :   <input id="utsavaDate" type="date">
+    <br>
+    Shake : <input id="shakaid" type="text">
+    <br>
+    Vakta : <input id="vaktaid" type="text">
+    <br>
+    Adhyaksharu :   <input id="adyakshaid" type="text">
+    <hr>
+    <input type="button" onclick="generateReport()" value="GENERATE REPORT !">
+    <hr>
+    <div style="color: blue;" id="warningArea"></div>
+    <div style="color: red;" id="errorArea"></div>
+    <br>
+    <div style="page-break-after: always" id="inputTable"></div>
+    
+    <div id="printablePages" style=" width: 100%; visibility: hidden;">
+        <!-- New printable pages begin -->
+        <hr>
+        <div style="text-align: center;">
+            <img src="OM.jpg" height="80" width="80">
+            <h2>Sri Gurupooja Utsava</h2>
+            <h4>Utsava vivara</h4>
+        </div>
+        <hr>
+        <h4 id="cpagebhaga"></h4>
+        <h4 id="cpagenagara"></h4>
+        <h4 id="cpagevasati"></h4>
+        <h4 id="cpageshaka"></h4>
+        <h4 id="cpageutsavadate"></h4>
+        <h4 id="cpagevakta"></h4>
+        <h4 id="cpageshakaadyaksharu"></h4>
+        <hr>
+        <h3 id="currentData"></h3>
+        <div id="outputTable"></div>
+        <hr>
+        <h3 id="sankyaVivara"></h3>
+        <div id="sankyaVivaraTable"></div>
+        <hr>
+        <h3 id="arpanaVivara"></h3>    
+        <h4 id="vingadane1"></h4>
+        <div id="vingadane1Table"></div>
+        <h4 id="vingadane2"></h4>
+        <div id="vingadane2Table"></div>
+        <h4 id="vingadane3"></h4>
+        <div id="vingadane3Table"></div>
+        <br>
+        <div id="arpanaGuri1"></div>
+        <div id="arpanaGuri2"></div>
+        <h4 id="sankhyaVingadane"></h4>
+        <div id="sankhyaVingadaneTable"></div>
+        <hr>
+        <h3 id="nagaduVivara"></h3>
+        <h4 id="coins"></h4>
+        <div id="coinsTable"></div>
+        <h4 id="notes"></h4>
+        <div id="notesTable"></div>
+        <hr>
+        <h3 id="scVivara"></h3>
+        <div id="scTable"></div>
+        <hr>
+        <h3 id="acVivara"></h3>
+        <div id="acTable"></div>
+        <hr>
+        <h3 id="peopleAbove1000"></h3>
+        <div id="peopleAbove1000Table"></div>
+        <hr>
+        <br>
+        <h4>-------------------------------------------</h4>
+        <h4>MuShi/Karyavaha/vyavashta pramukh Signature</h4>
+        <br>
+        <h4>---------------------------------</h4>
+        <h4>Bhaga Vyavastha pramukh Signature</h4>
+    </div>
+    <br>
+    <hr>
+    <div id="printablePages2"  style=" visibility: hidden; page-break-before: always;" >
+        <div id="pcrdpage">
+            <div style="text-align: center;">
+                <img src="OM.jpg" height="80" width="80">
+                <h2>Sri Gurupooja Utsava</h2>
+                <h4>Utsava vivara</h4>
+            </div>
+            <h4 id="ppagebhaga"></h4>
+            <h4 id="ppagenagara"></h4>
+            <h4 id="ppagevasati"></h4>
+            <h4 id="ppageshaka"></h4>
+            <div id="pcrdpageTable"></div>
+        </div>
+    </div>
+
+   <script>
+        // Global variable to hold total records.
+        var TOTAL_RECORDS = 2;
+        // Global variable for error string.
+        var errorString = "";
+        var errorsPresent = false;
+        // Global variable for warning string.
+        var warningString = "";
+        var warningsPresent = false;
+
+        // Global variables to keep track of a bunch of parameters.
+        var totalTaurnaUpastit = 0;
+        var totalTarunaArpisidavaru = 0;
+        var totalBalakaUpastit = 0;
+        var totalBalakaArpisidavaru = 0;
+        var totalShishuUpastit = 0;
+        var totalShishuArpisidavaru= 0;
+        var totalCash = 0;
+        var totalAnyaCheque = 0;
+        var totalSangrahaCheque = 0;
+        var totalArpaneTaruna = 0;
+        var totalArpaneBalaka = 0;
+        var totalArpaneShishu = 0;
+        var amountlt1000 = 0;
+        var amountgt1000 = 0;
+        var amount1to99 = 0;
+        var amount100to499 = 0;
+        var amount500to999 = 0;
+        var amount1000to4999 = 0;
+        var amount5000to9999 = 0;
+        var amount10000above = 0;
+
+        function Initialize() {
+            var table = document.createElement("table");
+            table.border = 5;
+
+            var row = table.insertRow(-1);
+
+            var headerCell = document.createElement("TH");
+            headerCell.innerHTML = "SL NO";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Name";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Sh";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Ba";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Ta";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Sangraha Chq";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Anya Chq";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Cash";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Sangraha Chq no";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Anya Chq no";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "PAN";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Addr";
+            row.appendChild(headerCell);
+
+            
+            for (var i = 1; i < TOTAL_RECORDS; i++) {
+                var row = table.insertRow(-1);
+
+                var headerCell = document.createElement("TH");
+                headerCell.innerHTML = i;
+                row.appendChild(headerCell);
+
+                var headerCell = document.createElement("TH");
+                headerCell.innerHTML = "<input id=name" + i + " type='text'>";
+                row.appendChild(headerCell);
+
+                headerCell = document.createElement("TH");
+                headerCell.innerHTML = "<input id=s" + i + " type='checkbox'>";
+                row.appendChild(headerCell);
+
+                headerCell = document.createElement("TH");
+                headerCell.innerHTML = "<input id=b" + i + " type='checkbox'>";
+                row.appendChild(headerCell);
+
+                headerCell = document.createElement("TH");
+                headerCell.innerHTML = "<input id=t" + i + " type='checkbox'>";
+                row.appendChild(headerCell);
+
+                headerCell = document.createElement("TH");
+                headerCell.innerHTML = "<input id=sc" + i + " type='number'>";
+                row.appendChild(headerCell);
+
+                headerCell = document.createElement("TH");
+                headerCell.innerHTML = "<input id=ac" + i + " type='number'>";
+                row.appendChild(headerCell);
+
+                headerCell = document.createElement("TH");
+                headerCell.innerHTML = "<input id=c" + i + " type='number'>";
+                row.appendChild(headerCell);
+
+                headerCell = document.createElement("TH");
+                headerCell.innerHTML = "<input id=scchqno" + i + " type='text'>";
+                row.appendChild(headerCell);
+
+                headerCell = document.createElement("TH");
+                headerCell.innerHTML = "<input id=anyachqno" + i + " type='text'>";
+                row.appendChild(headerCell);
+
+                headerCell = document.createElement("TH");
+                headerCell.innerHTML = "<input id=pcrd" + i + " type='text'>";
+                row.appendChild(headerCell);
+
+                headerCell = document.createElement("TH");
+                headerCell.innerHTML = "<input id=addr" + i + " type='text'>";
+                row.appendChild(headerCell);
+            }
+
+            var dvExcel = document.getElementById("inputTable");
+            dvExcel.innerHTML = "";
+            dvExcel.appendChild(table);
+
+        }
+        Initialize();
+
+
+
+        function generateReport() {
+            if (runValidationChecks()) {
+                document.getElementById("printablePages").style.visibility='visible';
+                document.getElementById("printablePages2").style.visibility='visible';
+                document.getElementById("cpagebhaga").innerText = "Bhaga : " + document.getElementById("bhagaid").value;
+                document.getElementById("cpagenagara").innerText = "Nagara : " + document.getElementById("nagaraid").value;
+                document.getElementById("cpagevasati").innerText = "Vasati : " + document.getElementById("vasatiid").value;
+                document.getElementById("cpageshaka").innerText = "Shaka : " + document.getElementById("shakaid").value;
+                document.getElementById("cpageutsavadate").innerText = "Date : " + document.getElementById("utsavaDate").value;
+                document.getElementById("cpagevakta").innerText = "Vakta : " + document.getElementById("vaktaid").value;
+                document.getElementById("cpageshakaadyaksharu").innerText = "Adhyaksharu : " + document.getElementById("adyakshaid").value;
+                setGlobalValues();
+                printCurrentInputData();
+                printSankhyaVivara();
+                printArpanaVivara();
+                printNagaduVivara();
+                printSCVivara();
+                printACVivara();
+                printpeopleAbove1000();
+                printPanCardTable();
+            }                          
+        }
+
+        function setGlobalValues() {
+            totalTaurnaUpastit = 0;
+            totalTarunaArpisidavaru = 0;
+            totalBalakaUpastit = 0;
+            totalBalakaArpisidavaru = 0;
+            totalShishuUpastit = 0;
+            totalShishuArpisidavaru= 0;
+            totalCash = 0;
+            totalAnyaCheque = 0;
+            totalSangrahaCheque = 0;
+            totalArpaneTaruna = 0;
+            totalArpaneBalaka = 0;
+            totalArpaneShishu = 0;
+            amountlt1000 = 0;
+            amountgt1000 = 0;
+            amount1to99 = 0;
+            amount100to499 = 0;
+            amount500to999 = 0;
+            amount1000to4999 = 0;
+            amount5000to9999 = 0;
+            amount10000above = 0;
+
+            for (var i = 1; i < TOTAL_RECORDS; i++) {
+
+                var name = document.getElementById("name" + i).value;
+                var taruna = document.getElementById("t" + i).checked;
+                var balaka = document.getElementById("b" + i).checked;
+                var shishu = document.getElementById("s" + i).checked;
+                var c = parseFloat(document.getElementById("c" + i).value);
+                var sc = parseFloat(document.getElementById("sc" + i).value);
+                var ac = parseFloat(document.getElementById("ac" + i).value);
+
+                var total = 0;
+                if (name != null && name != "") {
+                    if (!isNaN(c)) {
+                        total += c;
+                        totalCash += c;
+                    } else {
+                        c = 0;
+                    }
+
+                    if (!isNaN(sc)) {
+                        total += sc;
+                        totalSangrahaCheque += sc;
+                    } else {
+                        sc = 0;
+                    }
+
+                    if (!isNaN(ac)) {
+                        total += ac;
+                        totalAnyaCheque += ac;
+                    } else {
+                        ac = 0;
+                    }
+
+                    if (taruna) {
+                        totalTaurnaUpastit += 1;
+                        if (total > 0) {
+                            totalTarunaArpisidavaru += 1;
+                            totalArpaneTaruna += total;
+                        }
+                    } else if (balaka) {
+                        totalBalakaUpastit += 1;
+                        if (total > 0) {
+                            totalBalakaArpisidavaru += 1;
+                            totalArpaneBalaka += total;
+                        }
+                    } else if (shishu) {
+                        totalShishuUpastit += 1;
+                        if (total > 0) {
+                            totalShishuArpisidavaru += 1;
+                            totalArpaneShishu += total;
+                        }
+                    }
+
+                    if (total > 1000) {
+                        amountgt1000 += total;
+                    } else {
+                        amountlt1000 += total;
+                    }
+
+                    if (total >= 1 && total < 100) {
+                        amount1to99 += 1;
+                    } else if (total >= 100 && total < 500) {
+                        amount100to499 += 1;
+                    } else if (total >= 500 && total < 1000) {
+                        amount500to999 += 1;
+                    } else if (total >= 1000 && total < 5000) {
+                        amount1000to4999 += 1;
+                    } else if (total >= 5000 && total < 10000) {
+                        amount5000to9999 += 1;
+                    } else if (total >= 10000) {
+                        amount10000above += 1;
+                    }
+                }
+            }
+        }
+
+        function printPanCardTable() {
+            document.getElementById("ppagebhaga").innerText = "Bhaga : " + document.getElementById("bhagaid").value;
+            document.getElementById("ppagenagara").innerText = "Nagara : " + document.getElementById("nagaraid").value;
+            document.getElementById("ppagevasati").innerText = "Vasati : " + document.getElementById("vasatiid").value;
+            document.getElementById("ppageshaka").innerText = "Shaka : " + document.getElementById("shakaid").value;
+
+            var table = document.createElement("table");
+            table.border = 5;
+
+            var row = table.insertRow(-1);
+
+            var headerCell = document.createElement("TH");
+            headerCell.innerHTML = "SL NO";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Name";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Address";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "PAN CARD";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Age";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Amount";
+            row.appendChild(headerCell);
+            
+
+            for (var i = 1; i < TOTAL_RECORDS; i++) {
+                var name = document.getElementById("name" + i).value;
+                var sc = parseFloat(document.getElementById("sc" + i).value);
+                var ac = parseFloat(document.getElementById("ac" + i).value);
+                var c = parseFloat(document.getElementById("c" + i).value);
+                var pcrd = document.getElementById("pcrd" + i).value;
+                var addr = document.getElementById("addr" + i).value;
+                var taruna = document.getElementById("t" + i).checked;
+                var balaka = document.getElementById("b" + i).checked;
+                var shishu = document.getElementById("s" + i).checked;
+                var age = "";
+                
+                if (name != null && name != "") {
+                    var total = 0;
+                    if (!isNaN(c)) {
+                        total += c;
+                        totalCash += c;
+                    } else {
+                        c = 0;
+                    }
+
+                    if (!isNaN(sc)) {
+                        total += sc;
+                        totalSangrahaCheque += sc;
+                    } else {
+                        sc = 0;
+                    }
+
+                    if (!isNaN(ac)) {
+                        total += ac;
+                        totalAnyaCheque += ac;
+                    } else {
+                        ac = 0;
+                    }
+
+                    if (taruna) {
+                        age = "Taruna";
+                    } else if (shishu) {
+                        age = "Shishu";
+                    } else if (balaka) {
+                        age = "Balaka";
+                    }
+
+                    if (total >= 10000) {
+                        var row = table.insertRow(-1);
+
+                        var headerCell = document.createElement("TH");
+                        headerCell.innerHTML = i;
+                        row.appendChild(headerCell);
+
+                        headerCell = document.createElement("TH");
+                        headerCell.innerHTML = name;
+                        row.appendChild(headerCell);
+
+                        headerCell = document.createElement("TH");
+                        headerCell.innerHTML = addr;
+                        row.appendChild(headerCell);
+                        
+                        headerCell = document.createElement("TH");
+                        headerCell.innerHTML = pcrd;
+                        row.appendChild(headerCell);
+
+                        headerCell = document.createElement("TH");
+                        headerCell.innerHTML = age;
+                        row.appendChild(headerCell);
+
+                        headerCell = document.createElement("TH");
+                        headerCell.innerHTML = total;
+                        row.appendChild(headerCell);
+                    }
+                }                
+            }
+
+            
+            var dvExcel = document.getElementById("pcrdpageTable");
+            dvExcel.innerHTML = "";
+            dvExcel.appendChild(table);
+        }
+
+        function printpeopleAbove1000() {
+            document.getElementById("peopleAbove1000").innerText = "Details of people with 1000+ arpane.";
+
+            var table = document.createElement("table");
+            table.border = 5;
+
+            var row = table.insertRow(-1);
+
+            var headerCell = document.createElement("TH");
+            headerCell.innerHTML = "SL NO";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Name";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Amount";
+            row.appendChild(headerCell);
+
+            var totalAbove1000ArpaNe = 0;
+
+            for (var i = 1; i < TOTAL_RECORDS; i++) {
+                var name = document.getElementById("name" + i).value;
+                var sc = parseFloat(document.getElementById("sc" + i).value);
+                var ac = parseFloat(document.getElementById("ac" + i).value);
+                var c = parseFloat(document.getElementById("c" + i).value);
+                
+                if (name != null && name != "") {
+                    var total = 0;
+                    if (!isNaN(c)) {
+                        total += c;
+                        totalCash += c;
+                    } else {
+                        c = 0;
+                    }
+
+                    if (!isNaN(sc)) {
+                        total += sc;
+                        totalSangrahaCheque += sc;
+                    } else {
+                        sc = 0;
+                    }
+
+                    if (!isNaN(ac)) {
+                        total += ac;
+                        totalAnyaCheque += ac;
+                    } else {
+                        ac = 0;
+                    }
+
+                    if (total >= 1000) {
+                        var row = table.insertRow(-1);
+
+                        var headerCell = document.createElement("TH");
+                        headerCell.innerHTML = i;
+                        row.appendChild(headerCell);
+
+                        headerCell = document.createElement("TH");
+                        headerCell.innerHTML = name;
+                        row.appendChild(headerCell);
+
+                        headerCell = document.createElement("TH");
+                        headerCell.innerHTML = total;
+                        row.appendChild(headerCell);
+
+                        totalAbove1000ArpaNe+= total;
+                    }
+
+                    
+                }                
+            }
+
+            row = table.insertRow(-1);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "TOTAL";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = totalAbove1000ArpaNe;
+            row.appendChild(headerCell);
+
+            var dvExcel = document.getElementById("peopleAbove1000Table");
+            dvExcel.innerHTML = "";
+            dvExcel.appendChild(table);
+        }
+
+        function printSCVivara() {
+            document.getElementById("scVivara").innerText = "Sangraha Cheque Vivara";
+
+            var table = document.createElement("table");
+            table.border = 5;
+
+            var row = table.insertRow(-1);
+
+            var headerCell = document.createElement("TH");
+            headerCell.innerHTML = "SL NO";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "SC Chq NO";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Amount";
+            row.appendChild(headerCell);
+
+            for (var i = 1; i < TOTAL_RECORDS; i++) {
+                var name = document.getElementById("name" + i).value;
+                var sc = parseFloat(document.getElementById("sc" + i).value);
+                var scchqno = document.getElementById("scchqno" + i).value;
+
+                if (name != null && name != "") {
+                    var row = table.insertRow(-1);
+
+                    var headerCell = document.createElement("TH");
+                    headerCell.innerHTML = i;
+                    row.appendChild(headerCell);
+
+                    headerCell = document.createElement("TH");
+                    headerCell.innerHTML = scchqno;
+                    row.appendChild(headerCell);
+
+                    headerCell = document.createElement("TH");
+                    headerCell.innerHTML = sc;
+                    row.appendChild(headerCell);
+                }                
+            }
+
+            row = table.insertRow(-1);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "TOTAL";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = totalSangrahaCheque;
+            row.appendChild(headerCell);
+
+            var dvExcel = document.getElementById("scTable");
+            dvExcel.innerHTML = "";
+            dvExcel.appendChild(table);
+        }
+
+        function printACVivara() {
+            document.getElementById("acVivara").innerText = "Anya Cheque Vivara";
+
+            var table = document.createElement("table");
+            table.border = 5;
+
+            var row = table.insertRow(-1);
+
+            var headerCell = document.createElement("TH");
+            headerCell.innerHTML = "SL NO";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Anya Chq NO";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Amount";
+            row.appendChild(headerCell);
+
+            for (var i = 1; i < TOTAL_RECORDS; i++) {
+                var name = document.getElementById("name" + i).value;
+                var ac = parseFloat(document.getElementById("ac" + i).value);
+                var anyachqno= document.getElementById("anyachqno" + i).value;
+
+                if (name != null && name != "") {
+                    var row = table.insertRow(-1);
+
+                    var headerCell = document.createElement("TH");
+                    headerCell.innerHTML = i;
+                    row.appendChild(headerCell);
+
+                    headerCell = document.createElement("TH");
+                    headerCell.innerHTML = anyachqno;
+                    row.appendChild(headerCell);
+
+                    headerCell = document.createElement("TH");
+                    headerCell.innerHTML = ac;
+                    row.appendChild(headerCell);
+                }                
+            }
+
+            row = table.insertRow(-1);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "TOTAL";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = totalAnyaCheque;
+            row.appendChild(headerCell);
+
+            var dvExcel = document.getElementById("acTable");
+            dvExcel.innerHTML = "";
+            dvExcel.appendChild(table);
+        }
+
+        function printArpanaVivara() {
+
+            document.getElementById("arpanaVivara").innerText = "Arpana Vivaragalu";
+
+            var rowDetailsArr = ["Cash", "Anya Check", "Total", "Sangraha Check", "Grand Total"];
+
+            var table1 = document.createElement("table");
+            table1.border = 5;
+
+            var row = table1.insertRow(-1);
+
+            var headerCell = document.createElement("TH");
+            headerCell.innerHTML = "";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Amount";
+            row.appendChild(headerCell);
+
+            for (var i = 0; i < 5; i++) {
+                var row = table1.insertRow(-1);
+
+                var headerCell = document.createElement("TH");
+                headerCell.innerHTML = rowDetailsArr[i];
+                row.appendChild(headerCell);
+
+                var headerCell = document.createElement("TH");
+                if (i == 0) {
+                    headerCell.innerHTML = totalCash;
+                } else if (i == 1) {
+                    headerCell.innerHTML = totalAnyaCheque;
+                } else if (i == 2) {
+                    headerCell.innerHTML = (totalAnyaCheque + totalCash);
+                } else if (i == 3) {
+                    headerCell.innerHTML = totalSangrahaCheque;
+                } else {
+                    headerCell.innerHTML = (totalAnyaCheque + totalCash + totalSangrahaCheque);
+                }             
+                row.appendChild(headerCell);                
+            }
+
+            var dvExcel = document.getElementById("vingadane1Table");
+            dvExcel.innerHTML = "";
+            dvExcel.appendChild(table1);
+
+            document.getElementById("vingadane1").innerText = "Arpana Vingadane 1";
+
+            // Arpana vingadane 2
+            rowDetailsArr = ["From Taruna", "From Balaka", "From Shishu", "Total"];
+
+            var table2 = document.createElement("table");
+            table2.border = 5;
+
+            row = table2.insertRow(-1);
+
+            var headerCell = document.createElement("TH");
+            headerCell.innerHTML = "";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Amount";
+            row.appendChild(headerCell);
+
+            for (var i = 0; i < 4; i++) {
+                var row = table2.insertRow(-1);
+
+                var headerCell = document.createElement("TH");
+                headerCell.innerHTML = rowDetailsArr[i];
+                row.appendChild(headerCell);
+
+                var headerCell = document.createElement("TH");
+                if (i == 0) {
+                    headerCell.innerHTML = totalArpaneTaruna;
+                } else if (i == 1) {
+                    headerCell.innerHTML = totalArpaneBalaka;
+                } else if (i == 2) {
+                    headerCell.innerHTML = totalArpaneShishu;
+                } else if (i == 3) {
+                    headerCell.innerHTML = (totalArpaneShishu + totalArpaneTaruna + totalArpaneBalaka);
+                }         
+                row.appendChild(headerCell);                
+            }
+
+            var dvExcel = document.getElementById("vingadane2Table");
+            dvExcel.innerHTML = "";
+            dvExcel.appendChild(table2);
+
+            document.getElementById("vingadane2").innerText = "Arpana Vingadane 2";
+
+            // Arpana Vingadane 3
+            var table3 = document.createElement("table");
+            table3.border = 5;
+
+            row = table3.insertRow(-1);
+
+            var headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Amount less than 1000";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Amount greater than 1000";
+            row.appendChild(headerCell);
+
+            row = table3.insertRow(-1);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = amountlt1000;
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = amountgt1000;
+            row.appendChild(headerCell);                
+
+            var dvExcel = document.getElementById("vingadane3Table");
+            dvExcel.innerHTML = "";
+            dvExcel.appendChild(table3);
+
+            document.getElementById("vingadane3").innerText = "Arpana Vingadane 3";
+
+            // Sankhya vingadane
+            var table4 = document.createElement("table");
+            table4.border = 5;
+
+            row = table4.insertRow(-1);
+
+            var headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Amount";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Count";
+            row.appendChild(headerCell);
+
+            rowDetailsArr = ["1 - 99", "100 - 499", "500 - 999", "1000 - 4999", "5000 - 9999", "10000+"];
+
+            for (var i = 0; i < 6; i++) {
+                var row = table4.insertRow(-1);
+
+                var headerCell = document.createElement("TH");
+                headerCell.innerHTML = rowDetailsArr[i];
+                row.appendChild(headerCell);
+
+                var headerCell = document.createElement("TH");
+                if (i == 0) {
+                    headerCell.innerHTML = amount1to99;
+                } else if (i == 1) {
+                    headerCell.innerHTML = amount100to499;
+                } else if (i == 2) {
+                    headerCell.innerHTML = amount500to999;
+                } else if (i == 3) {
+                    headerCell.innerHTML = amount1000to4999;
+                } else if (i == 4) {
+                    headerCell.innerHTML = amount5000to9999;
+                } else if (i == 5) {
+                    headerCell.innerHTML = amount10000above;
+                }
+                row.appendChild(headerCell);                
+            }
+
+            var dvExcel = document.getElementById("sankhyaVingadaneTable");
+            dvExcel.innerHTML = "";
+            dvExcel.appendChild(table4);
+
+            document.getElementById("sankhyaVingadane").innerText = "Sankhya Vingadane";
+
+            var dv1 = document.getElementById("arpanaGuri1");
+            dv1.innerHTML = "<h4>Current Year's arpana guri : <input style='border: solid' type='text'></h4>";
+
+            var dv2 = document.getElementById("arpanaGuri2");
+            dv2.innerHTML = "<h4>Next Year's arpana guri : <input style='border: solid' type='text'></h4>";
+
+        }
+
+        function printSankhyaVivara() {
+
+            var rowDetailsArr = ["Upastiti guri", "Upastiti", "Arpane maadidavaru"];
+
+            var table = document.createElement("table");
+            table.border = 5;
+
+            var row = table.insertRow(-1);
+
+            var headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Sankhya Vivara";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Tarunaru";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Balakaru";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Shishugalu";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Total";
+            row.appendChild(headerCell);
+
+            for (var i = 0; i < 3; i++) {
+                var row = table.insertRow(-1);
+
+                var headerCell = document.createElement("TH");
+                headerCell.innerHTML = rowDetailsArr[i];
+                row.appendChild(headerCell);
+
+                var headerCell = document.createElement("TH");
+                if (i == 1) {
+                    headerCell.innerHTML = totalTaurnaUpastit;
+                } else if (i == 2) {
+                    headerCell.innerHTML = totalTarunaArpisidavaru;
+                } else {
+                    headerCell.innerHTML = "          ";
+                }                
+                row.appendChild(headerCell);
+
+                headerCell = document.createElement("TH");
+                if (i == 1) {
+                    headerCell.innerHTML = totalBalakaUpastit;
+                } else if (i == 2) {
+                    headerCell.innerHTML = totalBalakaArpisidavaru;
+                } else {
+                    headerCell.innerHTML = "          ";
+                }
+                row.appendChild(headerCell);
+
+                headerCell = document.createElement("TH");
+                if (i == 1) {
+                    headerCell.innerHTML = totalShishuUpastit;
+                } else if (i == 2) {
+                    headerCell.innerHTML = totalShishuArpisidavaru;
+                } else {
+                    headerCell.innerHTML = "          ";
+                }
+                row.appendChild(headerCell);
+
+                headerCell = document.createElement("TH");
+                if (i == 1) {
+                    headerCell.innerHTML = (totalTaurnaUpastit + totalBalakaUpastit + totalShishuUpastit);
+                } else if (i == 2) {
+                    headerCell.innerHTML = (totalTarunaArpisidavaru + totalBalakaArpisidavaru + totalShishuArpisidavaru);
+                } else {
+                    headerCell.innerHTML = "          ";
+                }
+                row.appendChild(headerCell);
+            }
+
+            var dvExcel = document.getElementById("sankyaVivaraTable");
+            dvExcel.innerHTML = "";
+            dvExcel.appendChild(table);
+
+            document.getElementById("sankyaVivara").innerText = "Sankya Vivara";
+        }
+
+        function printNagaduVivara() {
+
+            document.getElementById("nagaduVivara").innerText = "Nagadu Vivara";
+
+            var rowDetailsArr = ["10", "5", "2", "1"];
+            var table = document.createElement("table");
+            table.border = 5;
+
+            var row = table.insertRow(-1);
+
+            var headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Value";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Count";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Amount";
+            row.appendChild(headerCell);
+
+            
+            for (var i = 0; i < 4; i++) {
+                var row = table.insertRow(-1);
+
+                var headerCell = document.createElement("TH");
+                headerCell.innerHTML = rowDetailsArr[i];
+                row.appendChild(headerCell);
+
+                var headerCell = document.createElement("TH");
+                headerCell.innerHTML = "";             
+                row.appendChild(headerCell);
+
+                var headerCell = document.createElement("TH");
+                headerCell.innerHTML = "";             
+                row.appendChild(headerCell);             
+
+            }
+
+            var dvExcel = document.getElementById("coinsTable");
+            dvExcel.innerHTML = "";
+            dvExcel.appendChild(table);
+
+            document.getElementById("coins").innerText = "Coins";
+
+            // Notes
+            var rowDetailsArr = ["2000", "500", "200", "100", "50", "20", "10", "5", "2", "1"];
+            var table = document.createElement("table");
+            table.border = 5;
+
+            var row = table.insertRow(-1);
+
+            var headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Value";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Count";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Amount";
+            row.appendChild(headerCell);
+
+            
+            for (var i = 0; i < rowDetailsArr.length; i++) {
+                var row = table.insertRow(-1);
+
+                var headerCell = document.createElement("TH");
+                headerCell.innerHTML = rowDetailsArr[i];
+                row.appendChild(headerCell);
+
+                var headerCell = document.createElement("TH");
+                headerCell.innerHTML = "";             
+                row.appendChild(headerCell);
+
+                var headerCell = document.createElement("TH");
+                headerCell.innerHTML = "";             
+                row.appendChild(headerCell);             
+
+            }
+
+            var dvExcel = document.getElementById("notesTable");
+            dvExcel.innerHTML = "";
+            dvExcel.appendChild(table);
+
+            document.getElementById("notes").innerText = "Notes";
+
+        }
+
+        function printCurrentInputData() {
+
+            var table = document.createElement("table");
+            table.border = 5;
+
+            var row = table.insertRow(-1);
+
+            var headerCell = document.createElement("TH");
+            headerCell.innerHTML = "SL NO";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Name";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Age";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Sangraha Cheque";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Anya Cheque";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Cash";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "Total";
+            row.appendChild(headerCell);
+            
+            for (var i = 1; i < TOTAL_RECORDS; i++) {
+
+                var age = "";
+                var name = document.getElementById("name" + i).value;
+                var taruna = document.getElementById("t" + i).checked;
+                var balaka = document.getElementById("b" + i).checked;
+                var shishu = document.getElementById("s" + i).checked;
+                var c = parseFloat(document.getElementById("c" + i).value);
+                var sc = parseFloat(document.getElementById("sc" + i).value);
+                var ac = parseFloat(document.getElementById("ac" + i).value);
+
+                var total = 0;
+                if (name != null && name != "") {
+                    if (!isNaN(c)) {
+                        total += c;
+                    } else {
+                        c = 0;
+                    }
+
+                    if (!isNaN(sc)) {
+                        total += sc;
+                    } else {
+                        sc = 0;
+                    }
+
+                    if (!isNaN(ac)) {
+                        total += ac;
+                    } else {
+                        ac = 0;
+                    }
+                    
+                    if (taruna == true) {
+                        age = "Taruna";
+                    } else if (balaka == true) {
+                        age = "Balaka";
+                    } else if (shishu == true) {
+                        age = "Shishu";
+                    }
+
+                    var row = table.insertRow(-1);
+
+                    var headerCell = document.createElement("TH");
+                    headerCell.innerHTML = i;
+                    row.appendChild(headerCell);
+
+                    var headerCell = document.createElement("TH");
+                    headerCell.innerHTML = name;
+                    row.appendChild(headerCell);
+
+                    headerCell = document.createElement("TH");
+                    headerCell.innerHTML = age; 
+                    row.appendChild(headerCell);
+
+                    headerCell = document.createElement("TH");
+                    headerCell.innerHTML = sc;
+                    row.appendChild(headerCell);
+
+                    headerCell = document.createElement("TH");
+                    headerCell.innerHTML = ac;
+                    row.appendChild(headerCell);
+
+                    headerCell = document.createElement("TH");
+                    headerCell.innerHTML = c;
+                    row.appendChild(headerCell);
+
+                    headerCell = document.createElement("TH");
+                    headerCell.innerHTML = total;
+                    row.appendChild(headerCell);
+                }                
+            }
+
+            row = table.insertRow(-1);
+
+            var headerCell = document.createElement("TH");
+            headerCell.innerHTML = "COLUMN TOTALS";
+            row.appendChild(headerCell);
+
+            var headerCell = document.createElement("TH");
+            headerCell.innerHTML = "";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = ""; 
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = totalSangrahaCheque;
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = totalAnyaCheque;
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = totalCash;
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = (totalCash + totalSangrahaCheque + totalAnyaCheque);
+            row.appendChild(headerCell);
+
+            var dvExcel = document.getElementById("outputTable");
+            dvExcel.innerHTML = "";
+            dvExcel.appendChild(table);
+
+            document.getElementById("currentData").innerText = "Current data input";
+        }
+
+        function runValidationChecks() {
+                    
+            errorString = "";
+            errorsPresent = false;
+            document.getElementById("errorArea").innerHTML = "";
+            
+            warningString = "";
+            warningsPresent = false;
+            document.getElementById("warningArea").innerHTML = "";                 
+
+
+            var bhagaidV = document.getElementById("bhagaid").value;
+            var nagaraidV = document.getElementById("nagaraid").value;
+            var vasatiidV = document.getElementById("vasatiid").value;
+            var shakaidV = document.getElementById("shakaid").value;
+            var utsavaDateV = document.getElementById("utsavaDate").value;
+            var vaktaidV = document.getElementById("vaktaid").value;
+            var adyakshaidV = document.getElementById("adyakshaid").value;
+
+            if (bhagaidV == "") {
+                warningString += "<p> Set a value for Bhaga</p>";
+                warningsPresent = true;
+            }
+
+            if (nagaraidV == "") {
+                warningString += "<p> Set a value for Nagara</p>";
+                warningsPresent = true;
+            }
+
+            if (vasatiidV == "") {
+                warningString += "<p> Set a value for Vasati</p>";
+                warningsPresent = true;
+            }
+
+            if (shakaidV == "") {
+                warningString += "<p> Set a value for Vasati</p>";
+                warningsPresent = true;
+            }
+
+            if (adyakshaidV == "") {
+                warningString += "<p> Set a value for adyakshaidV</p>";
+                warningsPresent = true;
+            }
+
+            if (vaktaidV == "") {
+                warningString += "<p> Set a value for Vakta</p>";
+                warningsPresent = true;
+            }
+
+            for (var i = 1 ; i < TOTAL_RECORDS; i++) {
+                var name = document.getElementById("name" + i).value;
+                var c = parseFloat(document.getElementById("c" + i).value);
+                var sc = parseFloat(document.getElementById("sc" + i).value);
+                var ac = parseFloat(document.getElementById("ac" + i).value);
+                var panCard = document.getElementById("pcrd" + i).value;
+                var address = document.getElementById("addr" + i).value;
+                var taruna = document.getElementById("t" + i).checked;
+                var balaka = document.getElementById("b" + i).checked;
+                var shishu = document.getElementById("c" + i).checked;
+                var scchqno = document.getElementById("scchqno" + i).value;
+                var anyachqno = document.getElementById("anyachqno" + i).value;
+
+                if (name != "") {
+                    if (taruna) {
+                        if (balaka || shishu) {
+                            errorString += "<p> Set only one option of Taruna/Balaka/Shishu in row : " + i + " for : " + name + "</p>";
+                            errorsPresent = true;
+                        }
+                    } else if (balaka) {
+                        if (taruna || shishu) {
+                            errorString += "<p> Set only one option of Taruna/Balaka/Shishu in row : " + i + " for : " + name + "</p>";
+                            errorsPresent = true;
+                        }
+                    } else if (shishu) {
+                        if (taruna || balaka) {
+                            errorString += "<p> Set only one option of Taruna/Balaka/Shishu in row : " + i + " for : " + name + "</p>";
+                            errorsPresent = true;
+                        }
+                    }
+
+                    if (!isNaN(sc) && (sc > 0) && (scchqno == "")) {
+                        errorString += "<p> Input Sangraha cheque No in row : " + i + " for : " + name + "</p>";
+                        errorsPresent = true;
+                    }
+
+                    if (!isNaN(ac) && (ac > 0) && (anyachqno == "")) {
+                        errorString += "<p> Input Anya cheque No in row : " + i + " for : " + name + "</p>";
+                        errorsPresent = true;
+                    }
+
+                    if (isNaN(c)) {
+                        c = 0;
+                    }
+                    if (isNaN(ac)) {
+                        ac = 0;
+                    }
+                    if (isNaN(sc)) {
+                        sc = 0;
+                    }
+                    var total = c + ac + sc;
+                    if (total >= 10000 && ((panCard == "") || (addr == ""))) {
+                        warningString += "<p> Input pan card and address details in row : " + i + " for : " + name + " as total exceeds 10,000 Rupees!</p>";
+                        warningsPresent = true;
+                    }
+                }
+            }
+
+            if (warningsPresent) {
+                document.getElementById("warningArea").innerHTML = "<h4>WARNINGS !!</h4>" + warningString;
+                alert("Please try to correct warnings!");
+            }
+
+            if (errorsPresent) {
+                document.getElementById("errorArea").innerHTML = "<h4>ERRORS !!</h4>" + errorString;
+                alert("There are Errors in the input data ! Fix them !");
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+   </script>
+
+</html>
